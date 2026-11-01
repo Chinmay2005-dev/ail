@@ -1,0 +1,59 @@
+
+# Tower of Hanoi using State Space Search
+
+def display(rods):
+    print("Rod A:", rods['A'])
+    print("Rod B:", rods['B'])
+    print("Rod C:", rods['C'])
+    
+
+
+
+def move_disk(rods, start, end):
+
+    disk = rods[start].pop()
+
+    # Check whether the move is allowed
+    if len(rods[end]) == 0 or rods[end][-1] > disk:
+        rods[end].append(disk)
+        print("Move disk", disk, "from", start, "to", end)
+        display(rods)
+    else:
+        print("Invalid move!")
+
+
+
+def tower_of_hanoi(n, start, middle, end, rods):
+
+    if n == 1:
+        move_disk(rods, start, end)
+        return
+
+    # Move smaller disks to middle rod
+    tower_of_hanoi(n - 1, start, end, middle, rods)
+
+    # Move the biggest disk to end rod
+    move_disk(rods, start, end)
+
+    # Move smaller disks to end rod
+    tower_of_hanoi(n - 1, middle, start, end, rods)
+
+
+
+n = int(input("Enter number of disks: "))
+
+rods = {
+    'A': list(range(n, 0, -1)),
+    'B': [],
+    'C': []
+}
+
+print("\nInitial State:")
+display(rods)
+
+tower_of_hanoi(n, 'A', 'B', 'C', rods)
+
+print("Final State:")
+display(rods)
+
+print("Tower of Hanoi completed!")

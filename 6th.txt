@@ -1,0 +1,68 @@
+
+def get_next_states(a, b, capA, capB):
+
+    states = []
+
+    states.append(((capA, b), "Fill Jug A"))
+    states.append(((a, capB), "Fill Jug B"))
+    states.append(((0, b), "Empty Jug A"))
+    states.append(((a, 0), "Empty Jug B"))
+
+    water = min(a, capB - b)
+    states.append(((a - water, b + water), "Pour A to B"))
+
+    water = min(b, capA - a)
+    states.append(((a + water, b - water), "Pour B to A"))
+
+    return states
+
+
+def dfs(capA, capB, target):
+
+    start = (0, 0)
+
+    stack = [start]
+    visited = {start}
+    parent = {start: None}
+
+    while stack:
+
+        current = stack.pop()
+        a, b = current
+
+        if a == target or b == target:
+
+            path = []
+
+            while current != start:
+                previous, move = parent[current]
+                path.append((current, move))
+                current = previous
+
+            path.reverse()
+
+            print("\nSolution Found!")
+            print("Step 0: Initial State", start)
+
+            for i, (state, move) in enumerate(path, 1):
+                print("Step", i, ":", move, "->", state)
+
+            print("\nTarget Reached!")
+            return
+
+        for next_state, move in get_next_states(a, b, capA, capB):
+
+            if next_state not in visited:
+
+                visited.add(next_state)
+                parent[next_state] = (current, move)
+                stack.append(next_state)
+
+    print("No Solution Found")
+
+
+capA = 4
+capB = 3
+target = 2
+
+dfs(capA, capB, target)

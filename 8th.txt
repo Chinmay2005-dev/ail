@@ -1,0 +1,39 @@
+
+import re
+
+def chatbot(message):
+
+    patterns = [
+        (r"\b(hi|hello|hey)\b", "Hello! How can I help you?"),
+        (r"\b(your name|who are you)\b", "My name is SimpleBot."),
+        (r"\bhow are you\b", "I am fine. What about you?"),
+        (r"\btime\b", "I cannot check the current time."),
+        (r"\bhelp\b", "Sure! Tell me what you need help with."),
+        (r"\b(thank you|thanks)\b", "You're welcome!"),
+        (r"\b(your creator|who created you)\b", "I was created using Python."),
+        (r"\b(what is python|python)\b", "Python is a popular programming language."),
+        (r"\b(what is ai|artificial intelligence)\b", "AI means Artificial Intelligence."),
+        (r"\bbye\b", "Goodbye! Have a nice day!")
+    ]
+
+    for pattern, response in patterns:
+        if re.search(pattern, message, re.IGNORECASE):
+            return response
+
+    return "Sorry, I didn't understand. Please try again."
+
+
+print("Chatbot: Hello! Welcome to SimpleBot.")
+print("Chatbot: Type 'bye' to exit.")
+
+while True:
+
+    message = input("You: ")
+
+    if re.search(r"\b(bye|exit|quit)\b", message, re.IGNORECASE):
+        print("Chatbot: Goodbye! Have a nice day.")
+        break
+
+    response = chatbot(message)
+
+    print("Chatbot:", response)

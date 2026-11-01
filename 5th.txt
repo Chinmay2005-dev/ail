@@ -1,0 +1,75 @@
+
+from collections import deque
+
+def get_neighbors(state):
+    neighbors = []
+
+    zero = state.index(0)
+    row, col = divmod(zero, 3)
+
+    moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    for dr, dc in moves:
+        r = row + dr
+        c = col + dc
+
+        if 0 <= r < 3 and 0 <= c < 3:
+            new_pos = r * 3 + c
+
+            new_state = list(state)
+            new_state[zero], new_state[new_pos] = new_state[new_pos], new_state[zero]
+
+            neighbors.append(tuple(new_state))
+
+    return neighbors
+
+
+def bfs(start, goal):
+    queue = deque([start])
+
+    visited = {start}
+    parent = {start: None}
+
+    while queue:
+        current = queue.popleft()
+
+        if current == goal:
+            path = []
+
+            while current is not None:
+                path.append(current)
+                current = parent[current]
+
+            path.reverse()
+            return path
+
+        for neighbor in get_neighbors(current):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                parent[neighbor] = current
+                queue.append(neighbor)
+
+    return None
+
+
+def display(state):
+    for i in range(0, 9, 3):
+        print(state[i:i+3])
+
+
+start = (1, 2, 3, 4, 0, 6, 7, 5, 8)
+goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
+
+path = bfs(start, goal)
+
+if path:
+    print("Solution Found!")
+
+    for i, state in enumerate(path):
+        print("\nStep", i)
+        display(state)
+
+    print("\nTotal Moves:", len(path) - 1)
+
+else:
+    print("No Solution Found")

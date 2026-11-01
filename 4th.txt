@@ -1,0 +1,79 @@
+
+cities = ['A', 'B', 'C', 'D']
+
+distances = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+
+
+def beam_search(distances, beta):
+
+    n = len(distances)
+    paths = [([0], 0)]
+
+    for tier in range(1, n):
+
+        new_paths = []
+
+        for path, total in paths:
+
+            for city in range(n):
+
+                if city not in path:
+
+                    new_path = path + [city]
+                    new_distance = total + distances[path[-1]][city]
+
+                    new_paths.append((new_path, new_distance))
+
+        new_paths.sort(key=lambda x: x[1])
+
+        kept = new_paths[:beta]
+        removed = new_paths[beta:]
+
+        print("\nTier", tier)
+
+        if kept:
+            path, total = kept[0]
+            route = [cities[i] for i in path]
+
+            print("Path Kept:", " -> ".join(route))
+            print("Distance:", total)
+
+        print("Paths Removed:")
+
+        if removed:
+            for path, total in removed:
+                route = [cities[i] for i in path]
+                print(" -> ".join(route))
+        else:
+            print("None")
+
+        paths = kept
+
+    best_path = None
+    minimum_distance = float('inf')
+
+    for path, total in paths:
+
+        total = total + distances[path[-1]][path[0]]
+
+        if total < minimum_distance:
+            minimum_distance = total
+            best_path = path + [path[0]]
+
+    return best_path, minimum_distance
+
+
+beta = 2
+
+path, total = beam_search(distances, beta)
+
+print("\nShortest Route Found:")
+
+print(" -> ".join(cities[i] for i in path))
+
+print("Minimum Distance:", total)
